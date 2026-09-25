@@ -1,9 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
-//#include <locale.h>
-//#include <stdlib.h> 
-
 
 
 int getNumber() {
@@ -26,7 +23,8 @@ int main() {
 	int current_day = 1;
 	int current_hour = 8;
 	int inventory[10];
-	int menu;
+
+	int menu, cnt_hours, cnt_days;
 
 	do
 	{
@@ -41,26 +39,40 @@ int main() {
 
 		printf("Выберите пункт меню: ");
 		menu = getNumber();
-		//scanf_s("%c", menu);
-		//while 
-
+		
 		printf("Вы ввели %d\n", menu);
 
-		//if (isNumber(menu) == 0)
 		switch (menu) {
 			case 0:
 				break;
-			case 1: 
-				printf("\n"); 
+
+			case 1: // [1] Посмотреть на часы
+				printf("Текущее время: День %d, %s%d:00\n", 
+						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
+
 				break;
+
+			case 2: // [2] Промотать время (Поработать)
+				printf("Сколько часов хотите поработать? ");
+				cnt_hours = getNumber();
+				if (cnt_hours == 0)
+					printf("Да Вы работяга! Время прежнее.\n");
+				else {
+					current_hour += cnt_hours;
+					current_day += (int)(current_hour / 24);
+					current_hour = current_hour % 24;
+					printf("Поработали, сейчас: День %d, %s%d:00\n",
+						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
+				}
+				break;
+
 			default:
 				printf("Ошибка ввода пункта меню\n");
 				break;
 		}
-		
+		printf("\n");
+
 	} while (menu != 0);
-
-
 
 	return 0;
 }
