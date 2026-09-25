@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#define MAX_INVENTORY 10
+#define MAX_ITEMS 10
 
 int getNumber() {
 		
@@ -14,17 +16,65 @@ int getNumber() {
 	return num;
 }
 
+int getSlot(char *question) {
+
+	int id_slot;
+
+	printf("%s", question);
+	id_slot = getNumber();
+
+	if (id_slot < 0 || id_slot > MAX_INVENTORY - 1) {
+		printf("Номер слота должен быть в интервале от 0 до %d.\n", MAX_INVENTORY - 1);
+		return -1;
+	}
+	return id_slot;
+}
+
+int getItem(char *question, char *items[]) {
+
+	int id_item;
+
+	printf("%s (", question);
+	for (id_item = 0; id_item < MAX_ITEMS; id_item++) {
+		printf("[%d] %s", id_item, items[id_item]);
+		if (id_item < MAX_ITEMS - 1)
+			printf(", ");
+		else
+			printf(")? ");
+	}
+	id_item = getNumber();
+
+	if (id_item < 0 || id_item > MAX_ITEMS - 1) {
+		printf("Номер предмета должен быть в интервале от 0 до %d.\n", MAX_ITEMS - 1);
+		return -1;
+	}
+
+	return id_item;
+}
+
+void printInventory(int inventory[], char *items[]) {
+
+	for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
+		printf("Слот %d: [%d]", id_slot, inventory[id_slot]);
+		if (inventory[id_slot] != 0)
+			printf(" (%s)", items[inventory[id_slot]]);
+		if (id_slot < MAX_INVENTORY - 1)
+			printf(", ");
+	}
+	printf("\n");
+
+}
 
 int main() {
 	system("chcp 1251 > nul");
-	//setlocale(LC_ALL, "Rus");
-	
 
 	int current_day = 1;
 	int current_hour = 8;
-	int inventory[10];
+	int inventory[MAX_INVENTORY] = { 0 };
+	const char* items[MAX_ITEMS] = 
+					{"<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
 
-	int menu, cnt_hours, cnt_days;
+	int menu, cnt_hours, id_item, id_slot;
 
 	do
 	{
@@ -40,8 +90,6 @@ int main() {
 		printf("Выберите пункт меню: ");
 		menu = getNumber();
 		
-		printf("Вы ввели %d\n", menu);
-
 		switch (menu) {
 			case 0:
 				break;
@@ -64,6 +112,41 @@ int main() {
 					printf("Поработали, сейчас: День %d, %s%d:00\n",
 						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
 				}
+				break;
+
+			case 3: // [3] Посмотреть инвентарь
+
+				printInventory(inventory, items);
+
+				break;
+
+			case 4: // [4] Положить предмет в слот
+				
+				id_slot = getSlot("В какой слот кладём? ");
+				if (id_slot == - 1) 
+					break;
+
+				id_item = getItem("Какой предмет кладём", items);
+				if (id_item == -1)
+					break;
+
+				inventory[id_slot] = id_item;
+
+				break;
+
+			case 5: // [5] Выбросить предмет
+
+				id_slot = getSlot("Какой слот очищаем? ");
+				if (id_slot == -1)
+					break;
+
+				inventory[id_slot] = 0;
+
+				break;
+
+			case 6: // [6] Выбросить предмет
+
+
 				break;
 
 			default:
