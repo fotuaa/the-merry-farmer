@@ -1,52 +1,64 @@
-#include <stdio.h>
-#include <locale.h>
-#include <stdlib.h> 
+#define _CRT_SECURE_NO_WARNINGS
 
-int isNumber(char num) {
-	if (num >= '0' && num <= '9')
-		return 1;
-	else
-		return 0;
+#include <stdio.h>
+//#include <locale.h>
+//#include <stdlib.h> 
+
+
+
+int getNumber() {
+		
+	int num;
+	while (scanf("%d", &num) != 1)
+	{
+		printf("Вы ошиблись, введите число: ");
+		while (getchar() != '\n');
+	}
+	return num;
 }
 
 
 int main() {
 	system("chcp 1251 > nul");
-	setlocale(LC_ALL, "Rus");
+	//setlocale(LC_ALL, "Rus");
 	
 
 	int current_day = 1;
 	int current_hour = 8;
 	int inventory[10];
-	char menu;
+	int menu;
 
 	do
 	{
-		printf("РњРµРЅСЋ:\n");
-		printf("[0] Р’С‹С…РѕРґ\n");
-		printf("[1] РџРѕСЃРјРѕС‚СЂРµС‚СЊ РЅР° С‡Р°СЃС‹\n");
-		printf("[2] РџСЂРѕРјРѕС‚Р°С‚СЊ РІСЂРµРјСЏ (РџРѕСЂР°Р±РѕС‚Р°С‚СЊ)\n");
-		printf("[3] РџРѕСЃРјРѕС‚СЂРµС‚СЊ РёРЅРІРµРЅС‚Р°СЂСЊ\n");
-		printf("[4] РџРѕР»РѕР¶РёС‚СЊ РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚\n");
-		printf("[5] Р’С‹Р±СЂРѕСЃРёС‚СЊ РїСЂРµРґРјРµС‚\n");
-		printf("[6] Р’С‹РїРѕР»РЅРёС‚СЊ Р·Р°РґР°РЅРёРµ РїРѕ РІР°СЂРёР°РЅС‚Сѓ\n\n");
+		printf("Меню:\n");
+		printf("[0] Выход\n");
+		printf("[1] Посмотреть на часы\n");
+		printf("[2] Промотать время (Поработать)\n");
+		printf("[3] Посмотреть инвентарь\n");
+		printf("[4] Положить предмет в слот\n");
+		printf("[5] Выбросить предмет\n");
+		printf("[6] Выполнить задание по варианту\n\n");
 
-		printf("Р’С‹Р±РµСЂРёС‚Рµ РїСѓРЅРєС‚ РјРµРЅСЋ:");
-		menu = getchar();
-		//scanf("%c", &menu);
+		printf("Выберите пункт меню: ");
+		menu = getNumber();
+		//scanf_s("%c", menu);
+		//while 
+
+		printf("Вы ввели %d\n", menu);
+
 		//if (isNumber(menu) == 0)
 		switch (menu) {
-			case '0':
+			case 0:
 				break;
-			case '1': 
-				printf("1"); 
+			case 1: 
+				printf("\n"); 
 				break;
 			default:
-				printf("РћС€РёР±РєР° РІРІРѕРґР° РїСѓРЅРєС‚Р° РјРµРЅСЋ");
+				printf("Ошибка ввода пункта меню\n");
 				break;
 		}
 		
-	} while (menu != '0');
+	} while (menu != 0);
 
 
 
