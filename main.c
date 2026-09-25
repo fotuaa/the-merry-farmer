@@ -35,7 +35,7 @@ int getItem(char *question, char *items[]) {
 	int id_item;
 
 	printf("%s (", question);
-	for (id_item = 0; id_item < MAX_ITEMS; id_item++) {
+	for (id_item = 1; id_item < MAX_ITEMS; id_item++) {
 		printf("[%d] %s", id_item, items[id_item]);
 		if (id_item < MAX_ITEMS - 1)
 			printf(", ");
@@ -44,8 +44,8 @@ int getItem(char *question, char *items[]) {
 	}
 	id_item = getNumber();
 
-	if (id_item < 0 || id_item > MAX_ITEMS - 1) {
-		printf("Номер предмета должен быть в интервале от 0 до %d.\n", MAX_ITEMS - 1);
+	if (id_item < 1 || id_item > MAX_ITEMS - 1) {
+		printf("Номер предмета должен быть в интервале от 1 до %d.\n", MAX_ITEMS - 1);
 		return -1;
 	}
 
@@ -74,7 +74,7 @@ int main() {
 	const char* items[MAX_ITEMS] = 
 					{"<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
 
-	int menu, cnt_hours, id_item, id_slot;
+	int menu, cnt_hours, id_item, id_slot, cnt;
 
 	do
 	{
@@ -85,7 +85,7 @@ int main() {
 		printf("[3] Посмотреть инвентарь\n");
 		printf("[4] Положить предмет в слот\n");
 		printf("[5] Выбросить предмет\n");
-		printf("[6] Выполнить задание по варианту\n\n");
+		printf("[6] Очистка от мусора\n\n");
 
 		printf("Выберите пункт меню: ");
 		menu = getNumber();
@@ -144,7 +144,21 @@ int main() {
 
 				break;
 
-			case 6: // [6] Выбросить предмет
+			case 6: // [6] Очистка от мусора
+
+				id_item = getItem("Какой предмет ищем", items);
+				if (id_item == -1)
+					break;
+
+				cnt = 0;
+				for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
+					if (inventory[id_slot] == id_item) {
+						inventory[id_slot] = 0;
+						cnt++;
+					}
+				}
+				printf("Очищено: %d", cnt);
+				printf("\n");
 
 
 				break;
