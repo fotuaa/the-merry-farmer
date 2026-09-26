@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
+#include <windows.h>
 
 #define MAX_INVENTORY 10
 #define MAX_ITEMS 10
@@ -10,7 +11,7 @@ int getNumber() {
 	int num;
 	while (scanf("%d", &num) != 1)
 	{
-		printf("Вы ошиблись, введите число: ");
+		printf("Р’С‹ РѕС€РёР±Р»РёСЃСЊ, РІРІРµРґРёС‚Рµ С‡РёСЃР»Рѕ: ");
 		while (getchar() != '\n');
 	}
 	return num;
@@ -24,7 +25,7 @@ int getSlot(char *question) {
 	id_slot = getNumber();
 
 	if (id_slot < 0 || id_slot > MAX_INVENTORY - 1) {
-		printf("Номер слота должен быть в интервале от 0 до %d.\n", MAX_INVENTORY - 1);
+		printf("РќРѕРјРµСЂ СЃР»РѕС‚Р° РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РІ РёРЅС‚РµСЂРІР°Р»Рµ РѕС‚ 0 РґРѕ %d.\n", MAX_INVENTORY - 1);
 		return -1;
 	}
 	return id_slot;
@@ -45,7 +46,7 @@ int getItem(char *question, char *items[]) {
 	id_item = getNumber();
 
 	if (id_item < 1 || id_item > MAX_ITEMS - 1) {
-		printf("Номер предмета должен быть в интервале от 1 до %d.\n", MAX_ITEMS - 1);
+		printf("РќРѕРјРµСЂ РїСЂРµРґРјРµС‚Р° РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РІ РёРЅС‚РµСЂРІР°Р»Рµ РѕС‚ 1 РґРѕ %d.\n", MAX_ITEMS - 1);
 		return -1;
 	}
 
@@ -55,7 +56,7 @@ int getItem(char *question, char *items[]) {
 void printInventory(int inventory[], char *items[]) {
 
 	for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
-		printf("Слот %d: [%d]", id_slot, inventory[id_slot]);
+		printf("РЎР»РѕС‚ %d: [%d]", id_slot, inventory[id_slot]);
 		if (inventory[id_slot] != 0)
 			printf(" (%s)", items[inventory[id_slot]]);
 		if (id_slot < MAX_INVENTORY - 1)
@@ -66,67 +67,68 @@ void printInventory(int inventory[], char *items[]) {
 }
 
 int main() {
-	system("chcp 1251 > nul");
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP(CP_UTF8);
 
 	int current_day = 1;
 	int current_hour = 8;
 	int inventory[MAX_INVENTORY] = { 0 };
 	const char* items[MAX_ITEMS] = 
-					{"<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
+					{"<РџСѓСЃС‚Рѕ>", "Р”РµСЂРµРІРѕ", "РљР°РјРµРЅСЊ", "РЎРµРјРµРЅР°", "Р¦РІРµС‚С‹", "РЎС‚РµРєР»Рѕ", "РџР»Р°СЃС‚РёРє", "РЇР№С†Р°", "РњР°Р·РѕР»СЊ", "Р’Р°Р»РёРґРѕР»" };
 
 	int menu, cnt_hours, id_item, id_slot, cnt;
 
 	do
 	{
-		printf("Меню:\n");
-		printf("[0] Выход\n");
-		printf("[1] Посмотреть на часы\n");
-		printf("[2] Промотать время (Поработать)\n");
-		printf("[3] Посмотреть инвентарь\n");
-		printf("[4] Положить предмет в слот\n");
-		printf("[5] Выбросить предмет\n");
-		printf("[6] Очистка от мусора\n\n");
+		printf("РњРµРЅСЋ:\n");
+		printf("[0] Р’С‹С…РѕРґ\n");
+		printf("[1] РџРѕСЃРјРѕС‚СЂРµС‚СЊ РЅР° С‡Р°СЃС‹\n");
+		printf("[2] РџСЂРѕРјРѕС‚Р°С‚СЊ РІСЂРµРјСЏ (РџРѕСЂР°Р±РѕС‚Р°С‚СЊ)\n");
+		printf("[3] РџРѕСЃРјРѕС‚СЂРµС‚СЊ РёРЅРІРµРЅС‚Р°СЂСЊ\n");
+		printf("[4] РџРѕР»РѕР¶РёС‚СЊ РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚\n");
+		printf("[5] Р’С‹Р±СЂРѕСЃРёС‚СЊ РїСЂРµРґРјРµС‚\n");
+		printf("[6] РћС‡РёСЃС‚РєР° РѕС‚ РјСѓСЃРѕСЂР°\n\n");
 
-		printf("Выберите пункт меню: ");
+		printf("Р’С‹Р±РµСЂРёС‚Рµ РїСѓРЅРєС‚ РјРµРЅСЋ: ");
 		menu = getNumber();
 		
 		switch (menu) {
 			case 0:
 				break;
 
-			case 1: // [1] Посмотреть на часы
-				printf("Текущее время: День %d, %s%d:00\n", 
+			case 1: // [1] РџРѕСЃРјРѕС‚СЂРµС‚СЊ РЅР° С‡Р°СЃС‹
+				printf("РўРµРєСѓС‰РµРµ РІСЂРµРјСЏ: Р”РµРЅСЊ %d, %s%d:00\n", 
 						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
 
 				break;
 
-			case 2: // [2] Промотать время (Поработать)
-				printf("Сколько часов хотите поработать? ");
+			case 2: // [2] РџСЂРѕРјРѕС‚Р°С‚СЊ РІСЂРµРјСЏ (РџРѕСЂР°Р±РѕС‚Р°С‚СЊ)
+				printf("РЎРєРѕР»СЊРєРѕ С‡Р°СЃРѕРІ С…РѕС‚РёС‚Рµ РїРѕСЂР°Р±РѕС‚Р°С‚СЊ? ");
 				cnt_hours = getNumber();
 				if (cnt_hours == 0)
-					printf("Да Вы работяга! Время прежнее.\n");
+					printf("Р”Р° Р’С‹ СЂР°Р±РѕС‚СЏРіР°! Р’СЂРµРјСЏ РїСЂРµР¶РЅРµРµ.\n");
 				else {
 					current_hour += cnt_hours;
 					current_day += (int)(current_hour / 24);
 					current_hour = current_hour % 24;
-					printf("Поработали, сейчас: День %d, %s%d:00\n",
+					printf("РџРѕСЂР°Р±РѕС‚Р°Р»Рё, СЃРµР№С‡Р°СЃ: Р”РµРЅСЊ %d, %s%d:00\n",
 						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
 				}
 				break;
 
-			case 3: // [3] Посмотреть инвентарь
+			case 3: // [3] РџРѕСЃРјРѕС‚СЂРµС‚СЊ РёРЅРІРµРЅС‚Р°СЂСЊ
 
 				printInventory(inventory, items);
 
 				break;
 
-			case 4: // [4] Положить предмет в слот
+			case 4: // [4] РџРѕР»РѕР¶РёС‚СЊ РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚
 				
-				id_slot = getSlot("В какой слот кладём? ");
+				id_slot = getSlot("Р’ РєР°РєРѕР№ СЃР»РѕС‚ РєР»Р°РґС‘Рј? ");
 				if (id_slot == - 1) 
 					break;
 
-				id_item = getItem("Какой предмет кладём", items);
+				id_item = getItem("РљР°РєРѕР№ РїСЂРµРґРјРµС‚ РєР»Р°РґС‘Рј", items);
 				if (id_item == -1)
 					break;
 
@@ -134,9 +136,9 @@ int main() {
 
 				break;
 
-			case 5: // [5] Выбросить предмет
+			case 5: // [5] Р’С‹Р±СЂРѕСЃРёС‚СЊ РїСЂРµРґРјРµС‚
 
-				id_slot = getSlot("Какой слот очищаем? ");
+				id_slot = getSlot("РљР°РєРѕР№ СЃР»РѕС‚ РѕС‡РёС‰Р°РµРј? ");
 				if (id_slot == -1)
 					break;
 
@@ -144,9 +146,9 @@ int main() {
 
 				break;
 
-			case 6: // [6] Очистка от мусора
+			case 6: // [6] РћС‡РёСЃС‚РєР° РѕС‚ РјСѓСЃРѕСЂР°
 
-				id_item = getItem("Какой предмет ищем", items);
+				id_item = getItem("РљР°РєРѕР№ РїСЂРµРґРјРµС‚ РёС‰РµРј", items);
 				if (id_item == -1)
 					break;
 
@@ -157,14 +159,14 @@ int main() {
 						cnt++;
 					}
 				}
-				printf("Очищено: %d", cnt);
+				printf("РћС‡РёС‰РµРЅРѕ: %d", cnt);
 				printf("\n");
 
 
 				break;
 
 			default:
-				printf("Ошибка ввода пункта меню\n");
+				printf("РћС€РёР±РєР° РІРІРѕРґР° РїСѓРЅРєС‚Р° РјРµРЅСЋ\n");
 				break;
 		}
 		printf("\n");
