@@ -10,6 +10,9 @@
 .vs/
 *.suo
 *.user
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 
 # Генерируемые файлы
 output.txt
