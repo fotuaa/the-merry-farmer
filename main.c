@@ -4,6 +4,7 @@
 #include <windows.h>
 
 #define MAX_INVENTORY 10
+#define MAX_LENGHT_NAME 15
 #define MAX_ITEMS 10
 
 int getNumber() {
@@ -73,7 +74,7 @@ int main() {
 	int current_day = 1;
 	int current_hour = 8;
 	int inventory[MAX_INVENTORY] = { 0 };
-	const char* items[MAX_ITEMS] = 
+	const char* items[MAX_ITEMS][MAX_LENGHT_NAME] =
 					{"<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
 
 	int menu, cnt_hours, id_item, id_slot, cnt;
@@ -107,13 +108,16 @@ int main() {
 				cnt_hours = getNumber();
 				if (cnt_hours == 0)
 					printf("Да Вы работяга! Время прежнее.\n");
-				else {
+				else if (cnt_hours > 0) {
 					current_hour += cnt_hours;
 					current_day += (int)(current_hour / 24);
 					current_hour = current_hour % 24;
 					printf("Поработали, сейчас: День %d, %s%d:00\n",
 						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
 				}
+				else 
+					printf("Положительное число\n");
+
 				break;
 
 			case 3: // [3] Посмотреть инвентарь
