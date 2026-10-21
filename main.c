@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define MAX_INVENTORY 10
 #define MAX_LENGHT_NAME 30
@@ -57,14 +59,14 @@ int getItem(char *question, char items[][MAX_LENGHT_NAME]) {
 }
 
 void printInventory(int inventory[], char items[][MAX_LENGHT_NAME]) {
-
+	
+	printf("Список инвентаря:\n");
 	for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
-		printf("Слот %d: [%d]", id_slot, inventory[id_slot]);
-		if (inventory[id_slot] != 0)
-			printf(" (%s)", items[inventory[id_slot]]);
+		printf("Слот %d: [%d] - %s", id_slot, inventory[id_slot], items[inventory[id_slot]]);
 		if (id_slot < MAX_INVENTORY - 1)
-			printf(", ");
+			printf(", "); 
 	}
+
 	printf("\n");
 
 }
@@ -102,7 +104,6 @@ void getItems(char items[][MAX_LENGHT_NAME]) {
 
 			if (len > 0) {
 				if (i < MAX_ITEMS) {
-					printf("%s\n", str);
 					strcpy(items[i], str);
 					i++;
 				}
@@ -114,7 +115,7 @@ void getItems(char items[][MAX_LENGHT_NAME]) {
 		}
 
 		fclose(file); // Обязательно закрываем файл после работы!
-		printf("Список инвенторя прочитан из файла items.txt!\n");
+		printf("Список инвентаря прочитан из файла items.txt!\n");
 	}
 	printf("\n");
 
@@ -127,14 +128,12 @@ int main() {
 	int current_day = 1;
 	int current_hour = 8;
 	int inventory[MAX_INVENTORY] = { 0 };
-
 	
+	// Инициализация датчика случайных чисел
+	srand(time(NULL));
 
-	char items[MAX_ITEMS][MAX_LENGHT_NAME] = { "<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
+	char items[MAX_ITEMS][MAX_LENGHT_NAME]; // = { "<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
 	getItems(items);
-
-	//=
-	//				{"<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
 
 	int menu, cnt_hours, id_item, id_slot, cnt;
 	char farmer_name[MAX_LENGHT_NAME_FARMER];
@@ -158,7 +157,8 @@ int main() {
 		printf("[3] Посмотреть инвентарь\n");
 		printf("[4] Положить предмет в слот\n");
 		printf("[5] Выбросить предмет\n");
-		printf("[6] Очистка от мусора\n\n");
+		printf("[6] Очистка от мусора\n"); 
+		printf("[10] Замусоревание инвентаря\n\n");
 
 		printf("Выберите пункт меню: ");
 		menu = getNumber();
@@ -237,6 +237,18 @@ int main() {
 				printf("\n");
 
 
+				break;
+
+
+			case 10: // [10] Замусоревание инвентаря
+
+				for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
+					inventory[id_slot] = rand() % MAX_ITEMS;
+				}
+
+				printf("Инвентарь замусорен\n");
+				printInventory(inventory, items);
+			
 				break;
 
 			default:
