@@ -2,9 +2,11 @@
 
 #include <stdio.h>
 #include <windows.h>
+#include <string.h>
 
 #define MAX_INVENTORY 10
-#define MAX_LENGHT_NAME 15
+#define MAX_LENGHT_NAME 30
+#define MAX_LENGHT_NAME_FARMER 65
 #define MAX_ITEMS 10
 
 int getNumber() {
@@ -32,7 +34,7 @@ int getSlot(char *question) {
 	return id_slot;
 }
 
-int getItem(char *question, char *items[]) {
+int getItem(char *question, char items[][MAX_LENGHT_NAME]) {
 
 	int id_item;
 
@@ -54,7 +56,7 @@ int getItem(char *question, char *items[]) {
 	return id_item;
 }
 
-void printInventory(int inventory[], char *items[]) {
+void printInventory(int inventory[], char items[][MAX_LENGHT_NAME]) {
 
 	for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
 		printf("Слот %d: [%d]", id_slot, inventory[id_slot]);
@@ -67,6 +69,57 @@ void printInventory(int inventory[], char *items[]) {
 
 }
 
+void getItems(char items[][MAX_LENGHT_NAME]) {
+
+	FILE* file = fopen("items.txt", "r");
+
+	if (file == NULL) {
+		// Предзаполнение при отсутствии файла
+		strcpy(items[0], "<Пусто>\0");
+		strcpy(items[1], "Дерево\0");
+		strcpy(items[2], "Камень\0");
+		strcpy(items[3], "Семена\0");
+		strcpy(items[4], "Цветы\0");
+		strcpy(items[5], "Стекло\0");
+		strcpy(items[6], "Пластик\0");
+		strcpy(items[7], "Яйца\0");
+		strcpy(items[8], "Мазоль\0");
+		strcpy(items[9], "Валидол\0");
+
+		// Сообщим об ошибке чтения файла
+		printf("Ошибка: не удалось открыть файл items.txt!\n");
+	}
+	else {
+		// Читаем
+		int i = 0, len = 0;
+		char str[MAX_LENGHT_NAME];
+		while (fgets(str, sizeof(str), file) != NULL) {
+			len = strlen(str);
+			if (len > 0 && str[len - 1] == '\n') {
+				len--;
+				str[len] = '\0';
+			}
+
+			if (len > 0) {
+				if (i < MAX_ITEMS) {
+					printf("%s\n", str);
+					strcpy(items[i], str);
+					i++;
+				}
+				else {
+					printf("В файле больше %d строк считаны первые %d\n", MAX_ITEMS, MAX_ITEMS);
+				}
+			}
+
+		}
+
+		fclose(file); // Обязательно закрываем файл после работы!
+		printf("Список инвенторя прочитан из файла items.txt!\n");
+	}
+	printf("\n");
+
+}
+
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
@@ -74,13 +127,30 @@ int main() {
 	int current_day = 1;
 	int current_hour = 8;
 	int inventory[MAX_INVENTORY] = { 0 };
-	const char* items[MAX_ITEMS][MAX_LENGHT_NAME] =
-					{"<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
+
+	
+
+	char items[MAX_ITEMS][MAX_LENGHT_NAME] = { "<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
+	getItems(items);
+
+	//=
+	//				{"<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
 
 	int menu, cnt_hours, id_item, id_slot, cnt;
+	char farmer_name[MAX_LENGHT_NAME_FARMER];
+
+	printf("Как вас зовут? ");
+	if (fgets(farmer_name, sizeof(farmer_name), stdin) != NULL) {
+		farmer_name[strcspn(farmer_name, "\n")] = 0;
+	} else {
+		farmer_name[0] = '\0';
+	}
+	
+
 
 	do
 	{
+		printf("Здраствуйте, %s\n", farmer_name);
 		printf("Меню:\n");
 		printf("[0] Выход\n");
 		printf("[1] Посмотреть на часы\n");
@@ -176,6 +246,6 @@ int main() {
 		printf("\n");
 
 	} while (menu != 0);
-
+ 
 	return 0;
 }
