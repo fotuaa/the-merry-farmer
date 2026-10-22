@@ -24,15 +24,15 @@
  * @param items массив предметов
  * @return 
  */
-void printItems(char items[][MAX_LENGHT_NAME]) {
+void printItems(char items[][MAX_LENGHT_NAME], FILE* file) {
 
-	printf("Список предметов:\n");
+	fprintf(file, "Список предметов:\n");
 	for (int id_item = 0; id_item < MAX_ITEMS; id_item++) {
-		printf("[%d] - %s", id_item, items[id_item]);
+		fprintf(file, "[%d] - %s", id_item, items[id_item]);
 		if (id_item < MAX_ITEMS - 1)
-			printf(", ");
+			fprintf(file, ", ");
 	}
-	printf("\n");
+	fprintf(file, "\n");
 }
 
 int  findIdByName(char item_name[MAX_LENGHT_NAME], char items[][MAX_LENGHT_NAME]) {
@@ -98,19 +98,42 @@ void initItems(char items[][MAX_LENGHT_NAME]) {
 
 ////////////////////////////////
 //
+//  Функции работы с Фермером
+//
+
+void printFarmer(char* question, char farmer_name[MAX_LENGHT_NAME_FARMER], FILE* file) {
+
+	fprintf(file, "%s %s\n", question, farmer_name);
+}
+
+
+////////////////////////////////
+//
+//  Функции работы с Временем
+//
+
+void printTime(int current_day, int current_hour, FILE* file) {
+
+	fprintf(file, "Текущее время: День %d, %s%d:00.\n",
+		current_day, ((current_hour < 10) ? "0" : ""), current_hour);
+}
+
+
+////////////////////////////////
+//
 //  Функции работы с Инвентарем (рюкзаком)
 //
 
-void printInventory(int inventory[], char items[][MAX_LENGHT_NAME]) {
+void printInventory(int inventory[], char items[][MAX_LENGHT_NAME], FILE* file) {
 
-	printf("Список инвентаря:\n");
+	fprintf(file, "Список инвентаря:\n");
 	for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
-		printf("Слот %d: [%d] - %s", id_slot, inventory[id_slot], items[inventory[id_slot]]);
+		fprintf(file, "Слот %d: [%d] - %s", id_slot, inventory[id_slot], items[inventory[id_slot]]);
 		if (id_slot < MAX_INVENTORY - 1)
-			printf(", ");
+			fprintf(file, ", ");
 	}
 
-	printf("\n");
+	fprintf(file, "\n");
 
 }
 
@@ -170,7 +193,7 @@ int  getSlot(char *question) {
 
 int  getItem(char *question, char items[][MAX_LENGHT_NAME]) {
 
-	printItems(items);
+	printItems(items, stdout);
 	printf("%s", question);
 	
 	int id_item = getNumber();
@@ -184,6 +207,43 @@ int  getItem(char *question, char items[][MAX_LENGHT_NAME]) {
 }
 
 
+////////////////////////////////
+//
+//  Записать состояние в дневник
+//
+
+void saveDiary(char farmer_name[MAX_LENGHT_NAME_FARMER], 
+				int current_day, int current_hour, 
+				int inventory[MAX_INVENTORY], char items[MAX_ITEMS][MAX_LENGHT_NAME],
+				char pathOut) {
+
+	FILE* file;
+
+	if (pathOut == 'f') {
+		file = fopen(FILE_DIARY, "a");
+		if (file == NULL) {
+			printf("Ошибка: не удалось создать файл %s!\n", FILE_DIARY);
+			return;
+		}
+	}
+	else {
+		file = stdout;
+	}
+
+	// Вывод в дневник
+	fprintf(file, "\t*** Новая запись в дневнике:\n");
+	printFarmer("Имя фермера:", farmer_name, file);
+	printTime(current_day, current_hour, file);
+	printInventory(inventory, items, file);
+	fprintf(file, "\n\n");
+
+	if (pathOut == 'f') {
+		fclose(file);
+	}
+}
+
+
+
 int  main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
@@ -195,14 +255,13 @@ int  main() {
 	// Инициализация датчика случайных чисел
 	srand(time(NULL));
 
-	char items[MAX_ITEMS][MAX_LENGHT_NAME]; // = { "<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
+	char items[MAX_ITEMS][MAX_LENGHT_NAME]; 
 	initItems(items);
 
 	int menu, cnt_hours, id_item, id_slot, cnt;
 	char farmer_name[MAX_LENGHT_NAME_FARMER], item_name[MAX_LENGHT_NAME];
 
 
-	// getString("Как вас зовут? ", farmer_name);
 	if (getString("Как вас зовут? ", farmer_name) == 0) {
 		strcpy(farmer_name, "Инкогнито\0");
 	}
@@ -212,8 +271,9 @@ int  main() {
 
 	do
 	{
-		printf("Здраствуйте, %s\n", farmer_name);
-		printf("Меню:\n");
+		printFarmer("Здраствуйте,", farmer_name, stdout);
+
+		printf("\tМеню:\n");
 		printf("[0] Выход\n");
 		printf("[1] Посмотреть на часы\n");
 		printf("[2] Промотать время (Поработать)\n");
@@ -234,8 +294,7 @@ int  main() {
 				break;
 
 			case 1: // [1] Посмотреть на часы
-				printf("Текущее время: День %d, %s%d:00\n", 
-						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
+				printTime(current_day, current_hour, stdout);
 
 				break;
 
@@ -258,7 +317,7 @@ int  main() {
 
 			case 3: // [3] Посмотреть инвентарь
 
-				printInventory(inventory, items);
+				printInventory(inventory, items, stdout);
 
 				break;
 
@@ -306,7 +365,7 @@ int  main() {
 
 			case 7: // [7] Поиск предмета в рюкзаке по названию
 
-				printItems(items);
+				printItems(items, stdout);
 				if (getString("Какой предмет ищем (введите название)? ", item_name) == 0) {
 					printf("Название не введено. Поиск прерван");
 					break;
@@ -340,6 +399,9 @@ int  main() {
 
 			case 8: // [8] Записать состояние в дневник фермера
 
+				saveDiary(farmer_name, current_day, current_hour, inventory, items, 'f');
+				saveDiary(farmer_name, current_day, current_hour, inventory, items, 'm');
+
 				break;
 
 			case 9: // [9] Анализатор логов
@@ -353,7 +415,7 @@ int  main() {
 				}
 
 				printf("Инвентарь замусорен\n");
-				printInventory(inventory, items);
+				printInventory(inventory, items, stdout);
 			
 				break;
 
