@@ -1,0 +1,10 @@
+<Empty>
+Tree
+Stone
+Seeds
+Flowers
+Glass
+Plastic
+Eggs
+Mazol
+Validol

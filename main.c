@@ -10,70 +10,44 @@
 #define MAX_LENGHT_NAME 30
 #define MAX_LENGHT_NAME_FARMER 65
 #define MAX_ITEMS 10
+#define FILE_ITEMS "items_eng.txt"
+#define FILE_DIARY "diary.txt"
 
-int getNumber() {
-		
-	int num;
-	while (scanf("%d", &num) != 1)
-	{
-		printf("Вы ошиблись, введите число: ");
-		while (getchar() != '\n');
-	}
-	return num;
-}
 
-int getSlot(char *question) {
+////////////////////////////////
+//
+//  Функции работы с Предметами 
+//
 
-	int id_slot;
+/*
+ * Печатает список предметов
+ * @param items массив предметов
+ * @return 
+ */
+void printItems(char items[][MAX_LENGHT_NAME]) {
 
-	printf("%s", question);
-	id_slot = getNumber();
-
-	if (id_slot < 0 || id_slot > MAX_INVENTORY - 1) {
-		printf("Номер слота должен быть в интервале от 0 до %d.\n", MAX_INVENTORY - 1);
-		return -1;
-	}
-	return id_slot;
-}
-
-int getItem(char *question, char items[][MAX_LENGHT_NAME]) {
-
-	int id_item;
-
-	printf("%s (", question);
-	for (id_item = 1; id_item < MAX_ITEMS; id_item++) {
-		printf("[%d] %s", id_item, items[id_item]);
+	printf("Список предметов:\n");
+	for (int id_item = 0; id_item < MAX_ITEMS; id_item++) {
+		printf("[%d] - %s", id_item, items[id_item]);
 		if (id_item < MAX_ITEMS - 1)
 			printf(", ");
-		else
-			printf(")? ");
 	}
-	id_item = getNumber();
-
-	if (id_item < 1 || id_item > MAX_ITEMS - 1) {
-		printf("Номер предмета должен быть в интервале от 1 до %d.\n", MAX_ITEMS - 1);
-		return -1;
-	}
-
-	return id_item;
-}
-
-void printInventory(int inventory[], char items[][MAX_LENGHT_NAME]) {
-	
-	printf("Список инвентаря:\n");
-	for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
-		printf("Слот %d: [%d] - %s", id_slot, inventory[id_slot], items[inventory[id_slot]]);
-		if (id_slot < MAX_INVENTORY - 1)
-			printf(", "); 
-	}
-
 	printf("\n");
-
 }
 
-void getItems(char items[][MAX_LENGHT_NAME]) {
+int  findIdByName(char item_name[MAX_LENGHT_NAME], char items[][MAX_LENGHT_NAME]) {
 
-	FILE* file = fopen("items.txt", "r");
+	for (int i = 0; i < MAX_ITEMS; i++) {
+		if (strcmp(items[i], item_name) == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void initItems(char items[][MAX_LENGHT_NAME]) {
+
+	FILE* file = fopen(FILE_ITEMS, "r");
 
 	if (file == NULL) {
 		// Предзаполнение при отсутствии файла
@@ -89,7 +63,7 @@ void getItems(char items[][MAX_LENGHT_NAME]) {
 		strcpy(items[9], "Валидол\0");
 
 		// Сообщим об ошибке чтения файла
-		printf("Ошибка: не удалось открыть файл items.txt!\n");
+		printf("Ошибка: не удалось открыть файл %s!\n", FILE_ITEMS);
 	}
 	else {
 		// Читаем
@@ -115,35 +89,124 @@ void getItems(char items[][MAX_LENGHT_NAME]) {
 		}
 
 		fclose(file); // Обязательно закрываем файл после работы!
-		printf("Список инвентаря прочитан из файла items.txt!\n");
+		printf("Список инвентаря прочитан из файла %s!\n", FILE_ITEMS);
 	}
 	printf("\n");
 
 }
 
-int main() {
+
+////////////////////////////////
+//
+//  Функции работы с Инвентарем (рюкзаком)
+//
+
+void printInventory(int inventory[], char items[][MAX_LENGHT_NAME]) {
+
+	printf("Список инвентаря:\n");
+	for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
+		printf("Слот %d: [%d] - %s", id_slot, inventory[id_slot], items[inventory[id_slot]]);
+		if (id_slot < MAX_INVENTORY - 1)
+			printf(", ");
+	}
+
+	printf("\n");
+
+}
+
+
+////////////////////////////////
+//
+//  Ввод чисел и строк от пользователя
+//
+
+int  getNumber() {
+
+	int num;
+	while (scanf("%d", &num) != 1) {
+		printf("Вы ошиблись, введите число: ");
+	//	while (getchar() != '\n');
+	}
+	while (getchar() != '\n');
+
+	return num;
+}
+
+int  getString(char* question, char* str) {
+
+	printf("%s", question);
+
+	//while (getchar() != '\n');
+	if (fgets(str, sizeof(str), stdin) != NULL) {
+		str[strcspn(str, "\n")] = 0;
+	}
+	else {
+		str[0] = '\0';
+	}
+
+	return strlen(str);
+
+}
+
+
+////////////////////////////////
+//
+//  Ввод Ид слота и Ид предмета от пользователя
+//
+
+int  getSlot(char *question) {
+
+	int id_slot;
+
+	printf("%s", question);
+	id_slot = getNumber();
+
+	if (id_slot < 0 || id_slot > MAX_INVENTORY - 1) {
+		printf("Номер слота должен быть в интервале от 0 до %d.\n", MAX_INVENTORY - 1);
+		return -1;
+	}
+	return id_slot;
+}
+
+int  getItem(char *question, char items[][MAX_LENGHT_NAME]) {
+
+	printItems(items);
+	printf("%s", question);
+	
+	int id_item = getNumber();
+
+	if (id_item < 1 || id_item > MAX_ITEMS - 1) {
+		printf("Номер предмета должен быть в интервале от 1 до %d.\n", MAX_ITEMS - 1);
+		return -1;
+	}
+
+	return id_item;
+}
+
+
+int  main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 
 	int current_day = 1;
 	int current_hour = 8;
 	int inventory[MAX_INVENTORY] = { 0 };
-	
+
 	// Инициализация датчика случайных чисел
 	srand(time(NULL));
 
 	char items[MAX_ITEMS][MAX_LENGHT_NAME]; // = { "<Пусто>", "Дерево", "Камень", "Семена", "Цветы", "Стекло", "Пластик", "Яйца", "Мазоль", "Валидол" };
-	getItems(items);
+	initItems(items);
 
 	int menu, cnt_hours, id_item, id_slot, cnt;
-	char farmer_name[MAX_LENGHT_NAME_FARMER];
+	char farmer_name[MAX_LENGHT_NAME_FARMER], item_name[MAX_LENGHT_NAME];
 
-	printf("Как вас зовут? ");
-	if (fgets(farmer_name, sizeof(farmer_name), stdin) != NULL) {
-		farmer_name[strcspn(farmer_name, "\n")] = 0;
-	} else {
-		farmer_name[0] = '\0';
+
+	// getString("Как вас зовут? ", farmer_name);
+	if (getString("Как вас зовут? ", farmer_name) == 0) {
+		strcpy(farmer_name, "Инкогнито\0");
 	}
+
 	
 
 
@@ -158,6 +221,9 @@ int main() {
 		printf("[4] Положить предмет в слот\n");
 		printf("[5] Выбросить предмет\n");
 		printf("[6] Очистка от мусора\n"); 
+		printf("[7] Поиск предмета в рюкзаке по названию\n");
+		printf("[8] Записать состояние в дневник фермера\n");
+		printf("[9] Анализатор логов\n");
 		printf("[10] Замусоревание инвентаря\n\n");
 
 		printf("Выберите пункт меню: ");
@@ -202,7 +268,7 @@ int main() {
 				if (id_slot == - 1) 
 					break;
 
-				id_item = getItem("Какой предмет кладём", items);
+				id_item = getItem("Какой предмет кладём (введите ID)?", items);
 				if (id_item == -1)
 					break;
 
@@ -222,7 +288,7 @@ int main() {
 
 			case 6: // [6] Очистка от мусора
 
-				id_item = getItem("Какой предмет ищем", items);
+				id_item = getItem("Какой предмет ищем (введите ID)?", items);
 				if (id_item == -1)
 					break;
 
@@ -236,13 +302,53 @@ int main() {
 				printf("Очищено: %d", cnt);
 				printf("\n");
 
+				break;
+
+			case 7: // [7] Поиск предмета в рюкзаке по названию
+
+				printItems(items);
+				if (getString("Какой предмет ищем (введите название)? ", item_name) == 0) {
+					printf("Название не введено. Поиск прерван");
+					break;
+				}
+
+				id_item = findIdByName(item_name, items);
+				if (id_item == -1) {
+					printf("Такого предмета не существует");
+					break;
+				}
+
+				cnt = 0;
+				for (id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
+					if (inventory[id_slot] == id_item) {
+						cnt++;
+						if (cnt == 1) {
+							printf("Слот %d", id_slot);
+						}
+						else if (cnt > 1) {
+							printf(", %d", id_slot);
+						}
+						
+					}
+				}
+				if (cnt == 0)
+					printf("Такого предмета нет в инвентаре");
+				
+				printf("\n");
+				
+				break;
+
+			case 8: // [8] Записать состояние в дневник фермера
 
 				break;
 
+			case 9: // [9] Анализатор логов
+
+				break;
 
 			case 10: // [10] Замусоревание инвентаря
 
-				for (int id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
+				for (id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
 					inventory[id_slot] = rand() % MAX_ITEMS;
 				}
 
