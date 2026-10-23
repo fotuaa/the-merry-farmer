@@ -10,9 +10,14 @@
 #define MAX_LENGHT_NAME 30
 #define MAX_LENGHT_NAME_FARMER 65
 #define MAX_ITEMS 10
+
 #define FILE_ITEMS "items_eng.txt"
 #define FILE_DIARY "diary.txt"
 
+#define FILE_INPUT "input.txt"
+#define FILE_OUTPUT "output.txt"
+
+const int maxTag = 3, maxStat = 8, maxText = 1024;
 
 ////////////////////////////////
 //
@@ -148,7 +153,7 @@ int  getNumber() {
 	int num;
 	while (scanf("%d", &num) != 1) {
 		printf("Вы ошиблись, введите число: ");
-	//	while (getchar() != '\n');
+		while (getchar() != '\n');
 	}
 	while (getchar() != '\n');
 
@@ -243,6 +248,67 @@ void saveDiary(char farmer_name[MAX_LENGHT_NAME_FARMER],
 }
 
 
+////////////////////////////////
+//
+//  Анализ логов
+//
+
+void analyseLogFile() {
+	
+	#define maxTag 3
+	#define maxStat 8
+	#define maxText 1024
+
+	int i = 0, pos = 0, row = 0;
+	char text[1024];
+	int tagCnts[maxTag] = {0};
+	char tagNames[maxTag][maxStat] = { "[INFO]", "[WARN]", "[ERROR]" };
+	char* ptr;
+	
+
+	FILE* fIn = fopen(FILE_INPUT, "r");
+
+	if (fIn == NULL) {
+		printf("Ошибка: не удалось открыть файл %s!\n", FILE_INPUT);
+	}
+	else {
+		FILE* fOut = fopen(FILE_OUTPUT, "w");
+		if (fOut == NULL) {
+			printf("Ошибка: не удалось открыть файл %s!\n", FILE_OUTPUT);
+		} else {
+
+			while (fgets(text, sizeof(text), fIn) != NULL) {
+				row++;
+				ptr = strstr(text, " "); // Используем адрес в памяти
+				if (ptr != NULL) {
+					pos = ptr - text;
+					if (pos < maxStat) {
+						text[pos] = 0;
+						ptr++; // Сдвигаем адрес на один чтобы пропустьть 0
+						for (i = 0; i < maxTag; i++) {
+							if (strcmp(text, tagNames[i]) == 0) {
+								tagCnts[i]++;
+								if (i > 0) {
+									fprintf(fOut, "%d %s", row, ptr);
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+			fclose(fOut);
+		}
+		fclose(fIn); 
+
+		printf("Статистика тегов:\n");
+		for (i = 0; i < maxTag; i++) {
+			printf("%s - %d\n", tagNames[i], tagCnts[i]);
+		}
+	}
+
+}
+
 
 int  main() {
 	SetConsoleOutputCP(CP_UTF8);
@@ -265,8 +331,6 @@ int  main() {
 	if (getString("Как вас зовут? ", farmer_name) == 0) {
 		strcpy(farmer_name, "Инкогнито\0");
 	}
-
-	
 
 
 	do
@@ -405,6 +469,8 @@ int  main() {
 				break;
 
 			case 9: // [9] Анализатор логов
+
+				analyseLogFile();
 
 				break;
 
