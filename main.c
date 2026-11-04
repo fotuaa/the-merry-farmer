@@ -5,6 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
+#include <math.h>
+
 
 #define MAX_INVENTORY 10
 #define MAX_LENGHT_NAME 30
@@ -320,6 +323,7 @@ typedef struct {
 	int height, width;
 	int row, col;
 	char** ptr;
+	int cnt, radius, stepLight;
 } MAP;
 
 void mapCreate(MAP* map, int height, int width) {
@@ -333,6 +337,9 @@ void mapCreate(MAP* map, int height, int width) {
 
 	map->row = 0;
 	map->col = 0;
+	map->cnt = 0;
+	map->radius = 5;
+	map->stepLight = 0;
 }
 
 void mapFree(MAP *map) {
@@ -350,10 +357,10 @@ void mapFree(MAP *map) {
 
 void mapInit(MAP* map) {
 
-	int percent;
+	int percent, i, j;
 	char ch;
-	for (int i = 0; i < map->height; i++) {
-		for (int j = 0; j < map->width; j++) {
+	for (i = 0; i < map->height; i++) {
+		for (j = 0; j < map->width; j++) {
 			if (i == map->row && j == map->col) {
 				ch = '.';
 			}
@@ -373,27 +380,114 @@ void mapInit(MAP* map) {
 			map->ptr[i][j] = ch;
 		}
 	}
+
+	i = rand() % map->height;
+	j = (rand() % (map->width - 1) + 1 + map->col) % map->width;
+	map->ptr[i][j] = '^';
+
+}
+
+int mapIsFire(MAP* map) {
+	return (map->ptr[map->row][map->col] == '^') ? 1 : 0;
+}
+
+void mapLightOn(MAP* map) {
+	map->stepLight = 3;
 }
 
 void mapPrint(MAP* map) {
 
+	int r = 0;
+
+	printf("\033[2J");   // Очистить экран
+	printf("\033[0;0H"); // Позиционируемся в верхний левый угол экрана
 	for (int i = 0; i < map->height; i++) {
 		for (int j = 0; j < map->width; j++) {
-			printf("%c", map->ptr[i][j]);
+			printf("+---");
 		}
-		printf("\n");
+		printf("+\n");
+		for (int j = 0; j < map->width; j++) {
+			if (i == map->row && j == map->col) {
+				printf("| \x1B[32m@\x1B[0m ");
+			}
+			else {
+				if (map->stepLight == 0) {
+					printf("| \x1B[36m?\x1B[0m ");
+				}
+				else {
+					r = (int)sqrt((map->row - i) * (map->row - i) + (map->col - j) * (map->col - j));
+					if (r > map->radius) {
+						printf("| \x1B[36m?\x1B[0m ");
+					}
+					else {
+						if (map->ptr[i][j] == '^') {
+							printf("| \x1B[31m^\x1B[0m ");
+						}
+						else {
+							printf("| %c ", map->ptr[i][j]);
+						}
+					}
+				} 
+			}
+		}
+		printf("|\n");
+	}
+	for (int j = 0; j < map->width; j++) {
+		printf("+---");
+	}
+	printf("+\n");
+}
+
+void mapMove(MAP* map) {
+	if (map->stepLight > 0) {
+		map->stepLight--;
 	}
 }
 
 void mapPlay() {
 
+	int quit = 0;
+	char ch = 0, s[2];
 	MAP map;
 	mapCreate(&map, (rand() % 10) + 5, (rand() % 10) + 5);
 	mapInit(&map);
-	mapPrint(&map);
+	
 
+	do
+	{
+		mapPrint(&map);
 
+		scanf("%1s", s);
+		ch = toupper(s[0]);
 
+		switch (ch) {
+		case 'W': 
+			mapMove(&map);
+			break;
+			
+		case 'A': 
+			mapMove(&map);
+			break;
+			
+		case 'S': 
+			mapMove(&map);
+			break;
+
+		case 'D': 
+			mapMove(&map);
+			break;
+
+		case 'Q': 
+			quit = mapIsFire(&map);
+			break;
+
+		case 'L': 
+			mapLightOn(&map);
+
+			break;
+		}
+
+	} while (quit == 0);
 
 	mapFree(&map);
 }
