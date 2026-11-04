@@ -322,18 +322,17 @@ typedef struct {
 	char** ptr;
 } MAP;
 
-MAP mapCreate(int height, int width) {
+void mapCreate(MAP* map, int height, int width) {
 
-	MAP map;
-	map.height = height;
-	map.width = width;
-	map.ptr = (char**)malloc(height * sizeof(char*));
+	map->height = height;
+	map->width = width;
+	map->ptr = (char**)malloc(height * sizeof(char*));
 	for (int i = 0; i < height; i++) {
-		map.ptr[i] = (char*)malloc(width * sizeof(char));
+		map->ptr[i] = (char*)malloc(width * sizeof(char));
 	}
 
-	map.row = 0;
-	map.col = 0;
+	map->row = 0;
+	map->col = 0;
 }
 
 void mapFree(MAP *map) {
@@ -380,7 +379,7 @@ void mapPrint(MAP* map) {
 
 	for (int i = 0; i < map->height; i++) {
 		for (int j = 0; j < map->width; j++) {
-			printf("%s", map->ptr[i][j]);
+			printf("%c", map->ptr[i][j]);
 		}
 		printf("\n");
 	}
@@ -388,7 +387,8 @@ void mapPrint(MAP* map) {
 
 void mapPlay() {
 
-	MAP map = mapCreate((rand() % MAX_RANGE) + 5, (rand() % MAX_RANGE) + 5);
+	MAP map;
+	mapCreate(&map, (rand() % 10) + 5, (rand() % 10) + 5);
 	mapInit(&map);
 	mapPrint(&map);
 
