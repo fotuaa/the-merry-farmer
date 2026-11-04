@@ -11,6 +11,8 @@
 #define MAX_LENGHT_NAME_FARMER 65
 #define MAX_ITEMS 10
 
+#define MAX_RANGE 10
+
 #define FILE_ITEMS "items_eng.txt"
 #define FILE_DIARY "diary.txt"
 
@@ -164,7 +166,6 @@ int  getString(char* question, char* str) {
 
 	printf("%s", question);
 
-	//while (getchar() != '\n');
 	if (fgets(str, sizeof(str), stdin) != NULL) {
 		str[strcspn(str, "\n")] = 0;
 	}
@@ -310,6 +311,93 @@ void analyseLogFile() {
 }
 
 
+////////////////////////////////
+//
+//  Работа с картой
+//
+
+typedef struct {
+	int height, width;
+	int row, col;
+	char** ptr;
+} MAP;
+
+MAP mapCreate(int height, int width) {
+
+	MAP map;
+	map.height = height;
+	map.width = width;
+	map.ptr = (char**)malloc(height * sizeof(char*));
+	for (int i = 0; i < height; i++) {
+		map.ptr[i] = (char*)malloc(width * sizeof(char));
+	}
+
+	map.row = 0;
+	map.col = 0;
+}
+
+void mapFree(MAP *map) {
+
+	for (int i = 0; i < map->height; i++) {
+		free(map->ptr[i]);
+		map->ptr[i] = NULL;
+	}
+	free(map->ptr);
+	map->ptr = NULL;
+
+	map->height = 0;
+	map->width = 0;
+}
+
+void mapInit(MAP* map) {
+
+	int percent;
+	char ch;
+	for (int i = 0; i < map->height; i++) {
+		for (int j = 0; j < map->width; j++) {
+			if (i == map->row && j == map->col) {
+				ch = '.';
+			}
+			else {
+				percent = rand() % 101;
+				if (percent < 15) {
+					ch = 'R';
+				}
+				else if (percent < 30) {
+					ch = 'T';
+				}
+				else {
+					ch = '.';
+				}
+			}
+
+			map->ptr[i][j] = ch;
+		}
+	}
+}
+
+void mapPrint(MAP* map) {
+
+	for (int i = 0; i < map->height; i++) {
+		for (int j = 0; j < map->width; j++) {
+			printf("%s", map->ptr[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void mapPlay() {
+
+	MAP map = mapCreate((rand() % MAX_RANGE) + 5, (rand() % MAX_RANGE) + 5);
+	mapInit(&map);
+	mapPrint(&map);
+
+
+
+
+	mapFree(&map);
+}
+
 int  main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
@@ -348,7 +436,8 @@ int  main() {
 		printf("[7] Поиск предмета в рюкзаке по названию\n");
 		printf("[8] Записать состояние в дневник фермера\n");
 		printf("[9] Анализатор логов\n");
-		printf("[10] Замусоревание инвентаря\n\n");
+		printf("[10] Отправиться в приключение\n");
+		printf("[99] Замусоревание инвентаря\n\n");
 
 		printf("Выберите пункт меню: ");
 		menu = getNumber();
@@ -474,7 +563,13 @@ int  main() {
 
 				break;
 
-			case 10: // [10] Замусоревание инвентаря
+			case 10: // [10] Отправиться в приключение 
+
+				mapPlay();
+
+				break;
+
+			case 99: // [99] Замусоревание инвентаря
 
 				for (id_slot = 0; id_slot < MAX_INVENTORY; id_slot++) {
 					inventory[id_slot] = rand() % MAX_ITEMS;
@@ -482,7 +577,7 @@ int  main() {
 
 				printf("Инвентарь замусорен\n");
 				printInventory(inventory, items, stdout);
-			
+
 				break;
 
 			default:
