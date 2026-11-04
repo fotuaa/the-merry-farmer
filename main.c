@@ -14,7 +14,7 @@
 #define MAX_LENGHT_NAME_FARMER 65
 #define MAX_ITEMS 10
 
-#define MAX_RANGE 10
+#define MAX_RANGE 26
 
 #define FILE_ITEMS "items_eng.txt"
 #define FILE_DIARY "diary.txt"
@@ -326,6 +326,13 @@ typedef struct {
 	int cnt, radius, stepLight;
 } MAP;
 
+typedef enum {
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT
+} DIRECTIONS;
+
 void mapCreate(MAP* map, int height, int width) {
 
 	map->height = height;
@@ -436,10 +443,83 @@ void mapPrint(MAP* map) {
 		printf("+---");
 	}
 	printf("+\n");
+	printf("Пройдено локаций: %d, спичка (L) горит: %d\n", map->cnt, map->stepLight);
 }
 
-void mapMove(MAP* map) {
-	if (map->stepLight > 0) {
+void mapMove(MAP* map, DIRECTIONS arrow) {
+	int new = 0, step = 0;
+	char ch = 0;
+	
+
+	if (arrow == UP) {
+		if (map->row == 0) {
+			map->row = map->height - 1;
+			mapInit(map);
+			map->cnt++;
+			step = 1;
+		}
+		else {
+			new = map->row - 1;
+			ch = map->ptr[new][map->col];
+			if (ch == '.' || ch == '^') {
+				map->row = new;
+				step = 1;
+			}
+		}
+	}
+
+	if (arrow == DOWN) {
+		if (map->row == map->height - 1) {
+			map->row = 0;
+			mapInit(map);
+			map->cnt++;
+			step = 1;
+		}
+		else {
+			new = map->row + 1;
+			ch = map->ptr[new][map->col];
+			if (ch == '.' || ch == '^') {
+				map->row = new;
+				step = 1;
+			}
+		}
+	}
+
+	if (arrow == RIGHT) {
+		if (map->col == map->width - 1) {
+			map->col = 0;
+			mapInit(map);
+			map->cnt++;
+			step = 1;
+		}
+		else {
+			new = map->col + 1;
+			ch = map->ptr[map->row][new];
+			if (ch == '.' || ch == '^') {
+				map->col = new;
+				step = 1;
+			}
+		}
+	}
+
+	if (arrow == LEFT) {
+		if (map->col == 0) {
+			map->col = map->width - 1;
+			mapInit(map);
+			map->cnt++;
+			step = 1;
+		}
+		else {
+			new = map->col - 1;
+			ch = map->ptr[map->row][new];
+			if (ch == '.' || ch == '^') {
+				map->col = new;
+				step = 1;
+			}
+		}
+	}
+
+	if (map->stepLight > 0 && step == 1) {
 		map->stepLight--;
 	}
 }
@@ -449,7 +529,7 @@ void mapPlay() {
 	int quit = 0;
 	char ch = 0, s[2];
 	MAP map;
-	mapCreate(&map, (rand() % 10) + 5, (rand() % 10) + 5);
+	mapCreate(&map, (rand() % (MAX_RANGE)) + 5, (rand() % (MAX_RANGE)) + 5);
 	mapInit(&map);
 	
 
@@ -462,19 +542,19 @@ void mapPlay() {
 
 		switch (ch) {
 		case 'W': 
-			mapMove(&map);
+			mapMove(&map, UP);
 			break;
 			
 		case 'A': 
-			mapMove(&map);
+			mapMove(&map, LEFT);
 			break;
 			
 		case 'S': 
-			mapMove(&map);
+			mapMove(&map, DOWN);
 			break;
 
 		case 'D': 
-			mapMove(&map);
+			mapMove(&map, RIGHT);
 			break;
 
 		case 'Q': 
