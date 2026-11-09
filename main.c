@@ -16,6 +16,10 @@
 
 #define MAX_RANGE 26
 
+#define MAX_PERCENT 101
+#define MAX_PERCENT_R 15
+#define MAX_PERCENT_T 30
+
 #define FILE_ITEMS "items_eng.txt"
 #define FILE_DIARY "diary.txt"
 
@@ -322,6 +326,7 @@ void analyseLogFile() {
 typedef struct {
 	int height, width;
 	int row, col;
+	int row_Light, col_Light;
 	char** ptr;
 	int cnt, radius, stepLight;
 } MAP;
@@ -372,11 +377,11 @@ void mapInit(MAP* map) {
 				ch = '.';
 			}
 			else {
-				percent = rand() % 101;
-				if (percent < 15) {
+				percent = rand() % MAX_PERCENT;
+				if (percent < MAX_PERCENT_R) {
 					ch = 'R';
 				}
-				else if (percent < 30) {
+				else if (percent < MAX_PERCENT_T) {
 					ch = 'T';
 				}
 				else {
@@ -400,6 +405,8 @@ int mapIsFire(MAP* map) {
 
 void mapLightOn(MAP* map) {
 	map->stepLight = 3;
+	map->row_Light = map->row;
+	map->col_Light = map->col;
 }
 
 void mapPrint(MAP* map) {
@@ -422,7 +429,7 @@ void mapPrint(MAP* map) {
 					printf("| \x1B[36m?\x1B[0m ");
 				}
 				else {
-					r = (int)sqrt((map->row - i) * (map->row - i) + (map->col - j) * (map->col - j));
+					r = (int)sqrt((map->row_Light - i) * (map->row_Light - i) + (map->col_Light - j) * (map->col_Light - j));
 					if (r > map->radius) {
 						printf("| \x1B[36m?\x1B[0m ");
 					}
