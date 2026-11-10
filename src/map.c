@@ -2,6 +2,7 @@
 
 #include "map.h"
 
+#include <stdlib.h>
 
 ////////////////////////////////
 //

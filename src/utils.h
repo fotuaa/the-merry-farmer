@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
-
+#include <stdio.h>
 
 #define MAX_LENGHT_NAME 30
 
@@ -10,11 +10,6 @@
 #define FILE_INPUT "input.txt"
 #define FILE_OUTPUT "output.txt"
 
-
-typedef struct {
-	int current_day;
-	int current_hour;
-} CALEND;
 
 
 ////////////////////////////////
@@ -49,18 +44,6 @@ int  getItem(char* question, char items[][MAX_LENGHT_NAME]);
 void printItems(char items[][MAX_LENGHT_NAME], FILE* file);
 int  findIdByName(char item_name[MAX_LENGHT_NAME], char items[][MAX_LENGHT_NAME]);
 void initItems(char items[][MAX_LENGHT_NAME]);
-
-
-////////////////////////////////
-//
-//  Функции работы с Временем
-//
-
-void calendStart(CALEND* calend);
-void calendPrint(CALEND* calend, FILE* file);
-int calendMove(CALEND* calend, int cntHours);
-int calendIsNight(CALEND* calend);
-void calendNextDay(CALEND* calend);
 
 
 ////////////////////////////////

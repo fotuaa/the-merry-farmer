@@ -31,9 +31,7 @@ int  main() {
 	char farmer_name[MAX_LENGHT_NAME_FARMER], item_name[MAX_LENGHT_NAME];
 
 
-	if (getString("Как вас зовут? ", farmer_name) == 0) {
-		strcpy(farmer_name, "Инкогнито\0");
-	}
+	
 
 
 	do
