@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
-#include <math.h>
+
 
 #include "utils.h"
 #include "player.h"
@@ -62,7 +62,7 @@ int  main() {
 				break;
 
 			case 1: // [1] Посмотреть на часы
-				printTime(current_day, current_hour, stdout);
+				calendPrint(calend&, stdout);
 
 				break;
 

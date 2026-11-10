@@ -12,8 +12,8 @@
 
 
 typedef struct {
-	int current_day = 1;
-	int current_hour = 8;
+	int current_day;
+	int current_hour;
 } CALEND;
 
 
@@ -56,8 +56,11 @@ void initItems(char items[][MAX_LENGHT_NAME]);
 //  Функции работы с Временем
 //
 
-
-void printTime(int current_day, int current_hour, FILE* file);
+void calendStart(CALEND* calend);
+void calendPrint(CALEND* calend, FILE* file);
+int calendMove(CALEND* calend, int cntHours);
+int calendIsNight(CALEND* calend);
+void calendNextDay(CALEND* calend);
 
 
 ////////////////////////////////
