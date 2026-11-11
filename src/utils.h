@@ -1,8 +1,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 #include <stdio.h>
+#include "player.h"
 
 #define MAX_LENGHT_NAME 30
+#define MAX_ITEMS 10
 
 #define FILE_ITEMS "items_eng.txt"
 #define FILE_DIARY "diary.txt"
@@ -10,7 +12,10 @@
 #define FILE_INPUT "input.txt"
 #define FILE_OUTPUT "output.txt"
 
-
+typedef enum {
+	TOFILE,
+	TOSCREEN
+} PATHOUTTYPE;
 
 ////////////////////////////////
 //
@@ -51,10 +56,7 @@ void initItems(char items[][MAX_LENGHT_NAME]);
 //  Записать состояние в дневник
 //
 
-void saveDiary(char farmer_name[MAX_LENGHT_NAME_FARMER],
-	int current_day, int current_hour,
-	int inventory[MAX_INVENTORY], char items[MAX_ITEMS][MAX_LENGHT_NAME],
-	char pathOut);
+//void saveDiary(PLAYER* player, char items[MAX_ITEMS][MAX_LENGHT_NAME], PATHOUTTYPE pathOut);
 
 
 ////////////////////////////////

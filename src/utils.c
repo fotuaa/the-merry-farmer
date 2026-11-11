@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "utils.h"
 #include <stdio.h>
 
@@ -106,16 +108,16 @@ void initItems(char items[][MAX_LENGHT_NAME]) {
 
 	if (file == NULL) {
 		// Предзаполнение при отсутствии файла
-		strcpy(items[0], "<Пусто>\0");
-		strcpy(items[1], "Дерево\0");
-		strcpy(items[2], "Камень\0");
-		strcpy(items[3], "Семена\0");
-		strcpy(items[4], "Цветы\0");
-		strcpy(items[5], "Стекло\0");
-		strcpy(items[6], "Пластик\0");
-		strcpy(items[7], "Яйца\0");
-		strcpy(items[8], "Мазоль\0");
-		strcpy(items[9], "Валидол\0");
+		strcpy(items[0], "<Empty>\0");
+		strcpy(items[1], "Tree\0");
+		strcpy(items[2], "Stone\0");
+		strcpy(items[3], "Seeds\0");
+		strcpy(items[4], "Flowers\0");
+		strcpy(items[5], "Glass\0");
+		strcpy(items[6], "Plastic\0");
+		strcpy(items[7], "Eggs\0");
+		strcpy(items[8], "Mazol\0");
+		strcpy(items[9], "Validol\0");
 
 		// Сообщим об ошибке чтения файла
 		printf("Ошибка: не удалось открыть файл %s!\n", FILE_ITEMS);
@@ -156,14 +158,11 @@ void initItems(char items[][MAX_LENGHT_NAME]) {
 //  Записать состояние в дневник
 //
 
-void saveDiary(char farmer_name[MAX_LENGHT_NAME_FARMER],
-	int current_day, int current_hour,
-	int inventory[MAX_INVENTORY], char items[MAX_ITEMS][MAX_LENGHT_NAME],
-	char pathOut) {
+/*void saveDiary(PLAYER* player, char items[MAX_ITEMS][MAX_LENGHT_NAME], PATHOUTTYPE pathOut) {
 
 	FILE* file;
 
-	if (pathOut == 'f') {
+	if (pathOut == TOFILE) {
 		file = fopen(FILE_DIARY, "a");
 		if (file == NULL) {
 			printf("Ошибка: не удалось создать файл %s!\n", FILE_DIARY);
@@ -176,16 +175,14 @@ void saveDiary(char farmer_name[MAX_LENGHT_NAME_FARMER],
 
 	// Вывод в дневник
 	fprintf(file, "\t*** Новая запись в дневнике:\n");
-	printFarmer("Имя фермера:", farmer_name, file);
-	calendPrint(current_day, current_hour, file);
-	printInventory(inventory, items, file);
+	playerPrintCard(&player, items, file);
 	fprintf(file, "\n\n");
 
 	if (pathOut == 'f') {
 		fclose(file);
 	}
 }
-
+*/
 
 ////////////////////////////////
 //

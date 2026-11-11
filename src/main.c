@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+//#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <windows.h>
@@ -11,15 +11,13 @@
 #include "utils.h"
 #include "player.h"
 #include "map.h"
+#include "calend.h"
 
 
 int  main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 
-	int current_day = 1;
-	int current_hour = 8;
-	int inventory[MAX_INVENTORY] = { 0 };
 
 	// Инициализация датчика случайных чисел
 	srand(time(NULL));
@@ -27,8 +25,11 @@ int  main() {
 	char items[MAX_ITEMS][MAX_LENGHT_NAME]; 
 	initItems(items);
 
-	int menu, cnt_hours, id_item, id_slot, cnt;
-	char farmer_name[MAX_LENGHT_NAME_FARMER], item_name[MAX_LENGHT_NAME];
+	PLAYER* player = NULL;
+
+
+	int menu, id_item, id_slot, cnt;
+	char item_name[MAX_LENGHT_NAME];
 
 
 	
@@ -36,21 +37,17 @@ int  main() {
 
 	do
 	{
-		printFarmer("Здраствуйте,", farmer_name, stdout);
 
 		printf("\tМеню:\n");
 		printf("[0] Выход\n");
-		printf("[1] Посмотреть на часы\n");
-		printf("[2] Промотать время (Поработать)\n");
-		printf("[3] Посмотреть инвентарь\n");
-		printf("[4] Положить предмет в слот\n");
-		printf("[5] Выбросить предмет\n");
-		printf("[6] Очистка от мусора\n"); 
-		printf("[7] Поиск предмета в рюкзаке по названию\n");
-		printf("[8] Записать состояние в дневник фермера\n");
-		printf("[9] Анализатор логов\n");
-		printf("[10] Отправиться в приключение\n");
-		printf("[99] Замусоревание инвентаря\n\n");
+		printf("[1] Создать/пересоздать игрока\n");
+		printf("[2] Карточка персонажа\n");
+		printf("[3] Управление временем\n");
+		printf("[4] Управление инвентарем\n");
+		printf("[5] Записать состояние в дневник фермера\n");
+		printf("[6] Анализатор логов\n"); 
+		printf("[7] Отправиться в приключение\n\n");
+		
 
 		printf("Выберите пункт меню: ");
 		menu = getNumber();
@@ -59,13 +56,17 @@ int  main() {
 			case 0:
 				break;
 
-			case 1: // [1] Посмотреть на часы
-				calendPrint(calend&, stdout);
+			case 1: // [1] Создать/пересоздать игрока
+				playerCreate(&player);
 
 				break;
 
-			case 2: // [2] Промотать время (Поработать)
-				printf("Сколько часов хотите поработать? ");
+			case 2: // [2] Карточка персонажа
+				
+				playerPrintCard(&player, items, stdout);
+				
+				
+				/*printf("Сколько часов хотите поработать? ");
 				cnt_hours = getNumber();
 				if (cnt_hours == 0)
 					printf("Да Вы работяга! Время прежнее.\n");
@@ -77,13 +78,13 @@ int  main() {
 						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
 				}
 				else 
-					printf("Положительное число\n");
+					printf("Положительное число\n");*/
 
 				break;
 
-			case 3: // [3] Посмотреть инвентарь
+/*			case 3: // [3] Управление временем
 
-				printInventory(inventory, items, stdout);
+				playerPrintInventory(inventory, items, stdout);
 
 				break;
 
@@ -162,20 +163,20 @@ int  main() {
 				printf("\n");
 				
 				break;
+*/
+			case 5: // [5] Записать состояние в дневник фермера
 
-			case 8: // [8] Записать состояние в дневник фермера
-
-				saveDiary(farmer_name, current_day, current_hour, inventory, items, 'f');
-				saveDiary(farmer_name, current_day, current_hour, inventory, items, 'm');
+			//	saveDiary(&player, items, TOFILE);
+			//	saveDiary(&player, items, TOSCREEN);
 
 				break;
 
-			case 9: // [9] Анализатор логов
+			case 6: // [6] Анализатор логов
 
 				analyseLogFile();
 
 				break;
-
+/*
 			case 10: // [10] Отправиться в приключение 
 
 				mapPlay();
@@ -189,9 +190,11 @@ int  main() {
 				}
 
 				printf("Инвентарь замусорен\n");
-				printInventory(inventory, items, stdout);
+				playerPrintInventory(inventory, items, stdout);
 
 				break;
+
+*/
 
 			default:
 				printf("Ошибка ввода пункта меню\n");
@@ -200,6 +203,8 @@ int  main() {
 		printf("\n");
 
 	} while (menu != 0);
- 
+	
+	playerFree(&player);
+
 	return 0;
 }

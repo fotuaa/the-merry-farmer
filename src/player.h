@@ -7,9 +7,9 @@
 
 #define MAX_INVENTORY 10
 #define MAX_LENGHT_NAME_FARMER 65
-#define MAX_ITEMS 10
 #define MAX_HP 100
 #define MAX_STAMINA 50
+#define MAX_LENGHT_NAME 30
 
 
 typedef struct {
@@ -27,8 +27,8 @@ typedef struct {
 //  Функции работы с Фермером
 //
 
-void playerCreate(PLAYER* player);
-void playerFree(PLAYER* player);
+void playerCreate(PLAYER** player);
+void playerFree(PLAYER** player);
 
 
 ////////////////////////////////
@@ -36,7 +36,7 @@ void playerFree(PLAYER* player);
 //  Функции работы с Фермером
 //
 
-void printFarmer(char* question, char farmer_name[MAX_LENGHT_NAME_FARMER], FILE* file);
+void playerPrintCard(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
 
 
 ////////////////////////////////
@@ -44,7 +44,7 @@ void printFarmer(char* question, char farmer_name[MAX_LENGHT_NAME_FARMER], FILE*
 //  Функции работы с Инвентарем (рюкзаком)
 //
 
-void printInventory(int inventory[], char items[][MAX_LENGHT_NAME], FILE* file);
+void playerPrintInventory(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
 
 
 
