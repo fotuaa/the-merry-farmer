@@ -44,8 +44,14 @@ void playerSleep(PLAYER** player);
 
 void playerPrintInventory(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
 
+void playerPutInSlot(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
 
+void playerDropItem(PLAYER** player, FILE* file);
 
+void playerСleaningTrash(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
 
+void playerSearchByName(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
+
+void playerGarbaging(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
 
 #endif // !PLAYER_H

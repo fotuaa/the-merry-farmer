@@ -54,21 +54,6 @@ int  main() {
 			case 2: // [2] Карточка персонажа
 				
 				playerPrintCard(&player, items, stdout);
-				
-				
-				/*printf("Сколько часов хотите поработать? ");
-				cnt_hours = getNumber();
-				if (cnt_hours == 0)
-					printf("Да Вы работяга! Время прежнее.\n");
-				else if (cnt_hours > 0) {
-					current_hour += cnt_hours;
-					current_day += (int)(current_hour / 24);
-					current_hour = current_hour % 24;
-					printf("Поработали, сейчас: День %d, %s%d:00\n",
-						current_day, ((current_hour < 10) ? "0" : ""), current_hour);
-				}
-				else 
-					printf("Положительное число\n");*/
 
 				break;
 
@@ -79,9 +64,13 @@ int  main() {
 
 				break;
 
-/*		case 4: // [4] Положить предмет в слот
-				
-				id_slot = getSlot("В какой слот кладём? ");
+		case 4: // [4] Положить предмет в слот
+
+			inventoryDo(&player, items);
+
+			break;
+
+/*				id_slot = getSlot("В какой слот кладём? ");
 				if (id_slot == - 1) 
 					break;
 

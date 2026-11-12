@@ -330,3 +330,70 @@ void calendDo(PLAYER** player) {
 
 	} while (menu != 0);
 }
+
+void inventoryDo(PLAYER** player, char items[][MAX_LENGHT_NAME]) {
+
+	if ((*player) == NULL) {
+		printf("Игрок не создан\n");
+		return;
+	}
+
+	int menu;
+	char menuMain[7][MAX_LENGHT_MENU_ITEM] = { "Выход\0", "Посмотреть инвентарь\0", "Положить передмет в слот\0", "Выбросить предмет\0", "Отчистка мусора\0", "Поиск предмета по имени\0", "Замусоревание инвентаря\0"};
+
+
+
+	do
+	{
+		menu = menuChoice(menuMain, 7);
+
+
+		switch (menu) {
+		case 0: // [0] Выход
+			break;
+
+		case 1: // [1] Посмотреть инвентарь
+
+			playerPrintInventory(&(*player), items, stdout);
+
+			break;
+
+		case 2: // [2] Положить передмет в слот
+
+			playerPutInSlot(&(*player), items, stdout);
+
+			break;
+
+		case 3: // [3] Выбросить предмет
+
+			playerDropItem(&(*player), stdout);
+
+			break;
+
+		case 4: // [4] Отчистка мусора
+
+			playerСleaningTrash(&(*player), items, stdout);
+
+			break;
+
+		case 5: // [5] Поиск предмета по имени
+
+			playerSearchByName(&(*player), items, stdout);
+
+			break;
+
+		case 6: // [6] Замусоревание инвентаря
+
+			playerGarbaging(&(*player), items, stdout);
+
+			break;
+
+		default:
+			printf("Ошибка ввода пункта меню\n");
+			break;
+		}
+
+		printf("\n");
+
+	} while (menu != 0);
+}

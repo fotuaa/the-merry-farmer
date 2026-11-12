@@ -93,5 +93,6 @@ void analyseLogFile();
 int menuChoice(char menus[][MAX_LENGHT_MENU_ITEM], int n);
 
 void calendDo(PLAYER** player);
+void inventoryDo(PLAYER** player, char items[][MAX_LENGHT_NAME]);
 
 #endif // !UTILS_H

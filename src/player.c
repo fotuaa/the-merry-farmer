@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
+#include <time.h>
 #include "player.h"
 
 
@@ -114,3 +115,124 @@ void playerPrintInventory(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* 
 }
 
 
+void playerPutInSlot(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file) {
+
+	if ((*player) == NULL) {
+		fprintf(file, "Игрок не создан\n");
+		return;
+	}
+
+	int idSlot = 0, idItem = 0;
+
+	idSlot = getSlot("В какой слот кладём? ");
+	if (idSlot == -1)
+		return;
+
+	idItem = getItem("Какой предмет кладём (введите ID)?", items);
+	if (idItem == -1)
+		return;
+
+	(*player)->inventory[idSlot] = idItem;
+
+}
+
+void playerDropItem(PLAYER** player, FILE* file) {
+
+	if ((*player) == NULL) {
+		fprintf(file, "Игрок не создан\n");
+		return;
+	}
+
+	int idSlot = 0;
+
+	idSlot = getSlot("Какой слот очищаем? ");
+	if (idSlot == -1)
+		return;
+
+	(*player)->inventory[idSlot] = 0;
+}
+
+void playerСleaningTrash(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file) {
+
+	if ((*player) == NULL) {
+		fprintf(file, "Игрок не создан\n");
+		return;
+	}
+
+	int idSlot = 0, idItem = 0, cnt = 0;
+
+	idItem = getItem("Какой предмет ищем (введите ID)?", items);
+	if (idItem == -1)
+		return;
+
+	cnt = 0;
+	for (int idSlot = 0; idSlot < MAX_INVENTORY; idSlot++) {
+		if ((*player)->inventory[idSlot] == idItem) {
+			(*player)->inventory[idSlot] = 0;
+			cnt++;
+		}
+	}
+	printf("Очищено: %d", cnt);
+	printf("\n");
+}
+
+void playerSearchByName(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file) {
+
+	if ((*player) == NULL) {
+		fprintf(file, "Игрок не создан\n");
+		return;
+	}
+
+	int idSlot = 0, idItem = 0, cnt = 0;
+	char item_name[MAX_LENGHT_NAME];
+
+	printItems(items, stdout);
+	if (getString("Какой предмет ищем (введите название)? ", item_name) == 0) {
+		printf("Название не введено. Поиск прерван");
+		return;
+	}
+
+	idItem = findIdByName(item_name, items);
+	if (idItem == -1) {
+		printf("Такого предмета не существует");
+		return;
+	}
+
+	cnt = 0;
+	for (idSlot = 0; idSlot < MAX_INVENTORY; idSlot++) {
+		if ((*player)->inventory[idSlot] == idItem) {
+			cnt++;
+			if (cnt == 1) {
+				printf("Слот %d", idSlot);
+			}
+			else if (cnt > 1) {
+				printf(", %d", idSlot);
+			}
+
+		}
+	}
+	if (cnt == 0)
+		printf("Такого предмета нет в инвентаре");
+
+	printf("\n");
+}
+
+void playerGarbaging(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file) {
+
+	// Инициализация датчика случайных чисел
+	srand(time(NULL));
+
+	if ((*player) == NULL) {
+		fprintf(file, "Игрок не создан\n");
+		return;
+	}
+
+	int idSlot = 0;
+
+	for (idSlot = 0; idSlot < MAX_INVENTORY; idSlot++) {
+		(*player)->inventory[idSlot] = rand() % MAX_ITEMS;
+	}
+
+	printf("Инвентарь замусорен\n");
+	playerPrintInventory(&(*player), items, stdout);
+}
