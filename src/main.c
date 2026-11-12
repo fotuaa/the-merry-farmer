@@ -7,9 +7,9 @@
 #include <time.h>
 #include <ctype.h>
 
-
 #include "utils.h"
 #include "player.h"
+
 #include "map.h"
 #include "calend.h"
 
@@ -26,31 +26,21 @@ int  main() {
 	initItems(items);
 
 	PLAYER* player = NULL;
+	
 
 
 	int menu, id_item, id_slot, cnt;
 	char item_name[MAX_LENGHT_NAME];
 
-
+	char menuMain[8][MAX_LENGHT_MENU_ITEM] = {"Выход\0", "Создать/пересоздать игрока\0", "Карточка персонажа\0", "Управление временем\0", "Управление инвентарем\0", 
+										   "Записать состояние в дневник фермера\0", "Анализатор логов\0", "Отправиться в приключение\0"};
 	
 
 
 	do
 	{
+		menu = menuChoice(menuMain, 8);
 
-		printf("\tМеню:\n");
-		printf("[0] Выход\n");
-		printf("[1] Создать/пересоздать игрока\n");
-		printf("[2] Карточка персонажа\n");
-		printf("[3] Управление временем\n");
-		printf("[4] Управление инвентарем\n");
-		printf("[5] Записать состояние в дневник фермера\n");
-		printf("[6] Анализатор логов\n"); 
-		printf("[7] Отправиться в приключение\n\n");
-		
-
-		printf("Выберите пункт меню: ");
-		menu = getNumber();
 		
 		switch (menu) {
 			case 0:
@@ -82,13 +72,14 @@ int  main() {
 
 				break;
 
-/*			case 3: // [3] Управление временем
-
-				playerPrintInventory(inventory, items, stdout);
+			case 3: // [3] Управление временем
+				
+				calendDo(&player);
+				//playerPrintInventory(inventory, items, stdout);
 
 				break;
 
-			case 4: // [4] Положить предмет в слот
+/*		case 4: // [4] Положить предмет в слот
 				
 				id_slot = getSlot("В какой слот кладём? ");
 				if (id_slot == - 1) 
@@ -166,8 +157,8 @@ int  main() {
 */
 			case 5: // [5] Записать состояние в дневник фермера
 
-			//	saveDiary(&player, items, TOFILE);
-			//	saveDiary(&player, items, TOSCREEN);
+				saveDiary(&player, items, TOFILE);
+				saveDiary(&player, items, TOSCREEN);
 
 				break;
 

@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "player.h"
 
 
@@ -16,6 +18,7 @@ void playerCreate(PLAYER** player) {
 			return;
 		}
 		playerFree(&(*player));
+
 	}
 
 	(*player) = (PLAYER*) malloc(sizeof(PLAYER));
@@ -63,6 +66,28 @@ void playerPrintCard(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file)
 
 }
 
+void playerMaxStats(PLAYER** player) {
+	
+	if ((*player) == NULL) {
+		printf("Игрок не создан\n");
+		return;
+	}
+
+	(*player)->curHP = (*player)->maxHP;
+	(*player)->curStam = (*player)->maxStam;
+}
+
+void playerSleep(PLAYER** player) {
+
+	if ((*player) == NULL) {
+		printf("Игрок не создан\n");
+		return;
+	}
+
+	calendNextDay(&(*player)->calend);
+	playerMaxStats(&(*player));
+}
+
 
 ////////////////////////////////
 //
@@ -85,4 +110,7 @@ void playerPrintInventory(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* 
 
 	fprintf(file, "\n");
 
+
 }
+
+

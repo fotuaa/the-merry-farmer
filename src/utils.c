@@ -152,13 +152,17 @@ void initItems(char items[][MAX_LENGHT_NAME]) {
 
 }
 
-
 ////////////////////////////////
 //
 //  Записать состояние в дневник
 //
 
-/*void saveDiary(PLAYER* player, char items[MAX_ITEMS][MAX_LENGHT_NAME], PATHOUTTYPE pathOut) {
+void saveDiary(PLAYER** player, char items[MAX_ITEMS][MAX_LENGHT_NAME], PATHOUTTYPE pathOut) {
+
+	if ((*player) == NULL) {
+		printf("Игрок не создан\n");
+		return;
+	}
 
 	FILE* file;
 
@@ -175,14 +179,15 @@ void initItems(char items[][MAX_LENGHT_NAME]) {
 
 	// Вывод в дневник
 	fprintf(file, "\t*** Новая запись в дневнике:\n");
-	playerPrintCard(&player, items, file);
+	playerPrintCard(&(*player), items, file);
 	fprintf(file, "\n\n");
 
-	if (pathOut == 'f') {
+	if (pathOut == TOFILE) {
 		fclose(file);
 	}
 }
-*/
+
+
 
 ////////////////////////////////
 //
@@ -244,4 +249,84 @@ void analyseLogFile() {
 		}
 	}
 
+}
+
+////////////////////////////////
+//
+//  Виды меню
+//
+
+int menuChoice(char menus[][MAX_LENGHT_MENU_ITEM], int n) {
+	
+	int menu;
+	
+	do
+	{
+		printf("\tМеню:\n");
+		for (int i = 0; i < n; i++) {
+			printf("[%d] %s\n", i, menus[i]);
+		}
+		printf("\n");
+
+		printf("Выберите пункт меню: ");
+		menu = getNumber();
+
+	} while (menu < 0 || menu >= n);
+
+	return menu;
+
+}
+
+
+void calendDo(PLAYER** player) {
+	
+	if ((*player) == NULL) {
+		printf("Игрок не создан\n");
+		return;
+	}
+	
+	int menu, cntHours, cntReal;
+	char menuMain[4][MAX_LENGHT_MENU_ITEM] = { "Выход\0", "Показать часы\0", "Пропустить время\0", "Лечь спать\0"};
+
+
+
+	do
+	{
+		menu = menuChoice(menuMain, 4);
+
+
+		switch (menu) {
+		case 0: // [0] Выход
+			break;
+
+		case 1: // [1] Показать часы
+
+			calendPrint(&(*player)->calend, stdout);
+
+			break;
+
+		case 2: // [2] Пропустить время
+
+			printf("Сколько часов хотите поработать? ");
+			cntHours = getNumber(); 
+			cntReal = calendMove(&(*player)->calend, cntHours);
+			if (cntReal != cntHours) 
+				printf("Фактический сдвиг времени: %d\n", cntReal);
+
+			break;
+
+		case 3: // [3] Лечь спать
+
+			playerSleep(&(*player));
+
+			break;
+
+		default:
+			printf("Ошибка ввода пункта меню\n");
+			break;
+		}
+
+		printf("\n");
+
+	} while (menu != 0);
 }

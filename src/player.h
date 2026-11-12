@@ -5,21 +5,16 @@
 #include "calend.h"
 #include "utils.h"
 
-#define MAX_INVENTORY 10
-#define MAX_LENGHT_NAME_FARMER 65
+
 #define MAX_HP 100
 #define MAX_STAMINA 50
 #define MAX_LENGHT_NAME 30
 
 
-typedef struct {
-	char farmer_name[MAX_LENGHT_NAME_FARMER];
-	int curHP, maxHP; // текущее и полное здоровье
-	int curStam, maxStam; // текущее и полное стамина
-	int gold, row, col;
-	int inventory[MAX_INVENTORY];
-	CALEND calend;
-} PLAYER;
+
+
+
+
 
 
 ////////////////////////////////
@@ -37,6 +32,9 @@ void playerFree(PLAYER** player);
 //
 
 void playerPrintCard(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file);
+
+void playerMaxStats(PLAYER** player);
+void playerSleep(PLAYER** player);
 
 
 ////////////////////////////////
