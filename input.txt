@@ -1,6 +1,6 @@
-[INFO] Фермер родился
-[ERROR] Здоровье игрока отрицательное, но он жив
-[WARN] Фермеру день, но он уже работает
-[ERROR] Фермер пашет уже 4000 дней, без сна (КОГДА СПАТЬ?!)
-[INFO] Он остановился
-[INFO] Создан дневник
+[INFO] A farmer was born
+[ERROR] The player's health is negative, but he is alive
+[WARN] It's a day for the farmer, but he's already working
+[ERROR] Farmer has been plowing for 4000 days, without sleep (WHEN TO SLEEP?!)
+[INFO] He stopped
+[INFO] A diary has been created
