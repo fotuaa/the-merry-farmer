@@ -7,6 +7,28 @@
 
 ////////////////////////////////
 //
+//  Работа с погодой на карте
+//
+
+void weatherInit(MAP* map) {
+	map->weath.temperature = 20 - (rand() % TEMP_RANGE);
+	map->weath.windPower = (rand() % TEMP_RANGE);
+	map->weath.wt = (WEATHERTYPE)(rand() % 4);
+}
+
+char* weatherName(MAP* map) {
+	switch (map->weath.wt) {
+	case SUNNY:    return "SUNNY\0";
+	case RAINFALL: return "RAINFALL\0";
+	case FOG:      return "FOG\0";
+	case STORM:    return "STORM\0";
+	default:       return "\0";
+	}
+}
+
+
+////////////////////////////////
+//
 //  Работа с картой
 //
 
@@ -27,6 +49,8 @@ void mapCreate(MAP* map, int height, int width) {
 	map->stepLight = 0;
 	map->row_Light = 0;
 	map->col_Light = 0;
+
+	weatherInit(map);
 }
 
 void mapFree(MAP* map) {
@@ -125,15 +149,18 @@ void mapPrint(MAP* map, PLAYER** player) {
 		printf("+---");
 	}
 	printf("+\n");
-	printf("HP: %d / %d | Выносливость: %d / %d | Золото: %d | Этаж: %d | Время: %d:00\n", 
-		(*player)->curHP, (*player)->maxHP, (*player)->curStam, (*player)->maxStam, (*player)->gold, map->cnt, (*player)->calend.current_hour);
+	printf("HP: %d / %d | Выносливость: %d / %d | Золото: %d | Этаж: %d | Время: %d:00 | Погода: %s\n", 
+		(*player)->curHP, (*player)->maxHP, (*player)->curStam, (*player)->maxStam, (*player)->gold, map->cnt, (*player)->calend.current_hour, weatherName(map));
 	//printf("Пройдено локаций: %d, спичка (L) горит: %d\n", map->cnt, map->stepLight);
 }
 
 void mapMove(MAP* map, PLAYER** player, DIRECTIONS arrow) {
-	int new = 0, step = 0, newForest =0;
+	int new = 0, step = 0, newForest = 0, priceStep = 1;
 	char ch = 0;
 
+	if ((map->weath.wt == STORM) && ((rand() % MAX_PERCENT) <= PERCENT_MOVE)) {
+		arrow = (DIRECTIONS) (rand() % 4);
+	}
 
 	if (arrow == UP) {
 		if ((*player)->row == 0) {
@@ -199,18 +226,23 @@ void mapMove(MAP* map, PLAYER** player, DIRECTIONS arrow) {
 		}
 	}
 
+	if (map->weath.wt == RAINFALL)
+		priceStep = 2;
+
 	if (newForest == 1) {
 		mapInit(map, &(*player));
 		map->cnt++;
-		(*player)->curStam = ((*player)->curStam <= 4) ? 0 : (*player)->curStam - 4;
+
+		priceStep = priceStep * 5;
+		(*player)->curStam = ((*player)->curStam <= priceStep) ? 0 : (*player)->curStam - priceStep;
+		weatherInit(map);
 		
 		calendMove(&(*player)->calend, 1);
 		(*player)->gold += BASE_COEF * map->cnt;
 		map->stepLight = 0;
-	}
-
-	if (step == 1) {
-		(*player)->curStam = ((*player)->curStam <= 1) ? 0 : (*player)->curStam - 1;
+	} 
+	else if (step == 1) {
+		(*player)->curStam = ((*player)->curStam <= priceStep) ? 0 : (*player)->curStam - priceStep;
 		if (map->stepLight > 0) {
 			map->stepLight--;
 		}
@@ -276,10 +308,11 @@ void mapPlay(PLAYER** player) {
 			break;
 		}
 
+
 		if ((calendIsNight(&(*player)->calend) == 1) || ((*player)->curStam <= 0)) {
-			printf("Вы упали в обморок и возвращаетесь домой\n");
+			printf("Вы упали в обморок и возвращаетесь домой. Стоимость услуг спасателей составила %d ¢\n", ((*player)->gold - (int)((*player)->gold / 2)));
 			(*player)->gold = (int)((*player)->gold / 2);
-			printf("Выносливость: %d | Золото: %d | Время: %d:00\n",
+			printf("Выносливость: %d, золото: %d, время: %d:00\n",
 				(*player)->curStam, (*player)->gold, (*player)->calend.current_hour);
 			
 			break;
