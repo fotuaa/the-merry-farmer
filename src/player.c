@@ -128,7 +128,7 @@ void playerPutInSlot(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* file)
 	if (idSlot == -1)
 		return;
 
-	idItem = getItem("Какой предмет кладём (введите ID)?", items);
+	idItem = getItem("Какой предмет кладём (введите ID)? ", items);
 	if (idItem == -1)
 		return;
 
@@ -161,7 +161,7 @@ void playerСleaningTrash(PLAYER** player, char items[][MAX_LENGHT_NAME], FILE* 
 
 	int idSlot = 0, idItem = 0, cnt = 0;
 
-	idItem = getItem("Какой предмет ищем (введите ID)?", items);
+	idItem = getItem("Какой предмет ищем (введите ID)? ", items);
 	if (idItem == -1)
 		return;
 

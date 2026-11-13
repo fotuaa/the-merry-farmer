@@ -6,7 +6,7 @@
 //  Функции работы с Временем
 //
 
-void calendStart(CALEND* calend) {
+void calendStart(CALEND* calend) { 
 
 	calend->current_day = 1;
 	calend->current_hour = 8;
