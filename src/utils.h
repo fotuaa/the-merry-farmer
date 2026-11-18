@@ -42,6 +42,7 @@ typedef enum {
 
 int  getNumber();
 int  getString(char* question, char* str);
+int  getKey(int* ch1);
 
 
 

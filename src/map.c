@@ -267,42 +267,55 @@ void mapPlay(PLAYER** player) {
 	(*player)->row = 0;
 	(*player)->col = 0;
 
+	unsigned char ch = 0, s[2];
+	int ch1 = 0, ch2 = 0;
+
 	int quit = 0;
-	char ch = 0, s[2];
 	MAP map;
 	mapCreate(&map, (rand() % (MAX_RANGE)) + 5, (rand() % (MAX_RANGE)) + 5);
 	mapInit(&map, &(*player));
-
 
 	do
 	{
 		mapPrint(&map, &(*player));
 
-		scanf("%1s", s);
-		ch = toupper(s[0]);
+		// для винды
+		ch1 = getch();
+		if (ch1 == 0 || ch1 == 224) {
+			ch2 = getch();
+		}
+		else {
+			ch2 = ch1;
+			ch1 = -1;
+		}
+		ch = toupper((unsigned char)ch2);
+
+		// универсальный метод
+		//scanf("%1s", s);
+		//ch = toupper(s[0]);
 
 		switch (ch) {
-		case 'W':
+		case 87: // 'W':
 			mapMove(&map, &(*player), UP);
 			break;
 
-		case 'A':
+		case 65: // 'A':
 			mapMove(&map, &(*player), LEFT);
 			break;
 
-		case 'S':
+		case 83: // 'S':
 			mapMove(&map, &(*player), DOWN);
 			break;
 
-		case 'D':
+		case 68: // 'D':
 			mapMove(&map, &(*player), RIGHT);
 			break;
 
-		case 'Q':
+		case 81: // 'Q':
 			quit = mapIsFire(&map, &(*player));
 			break;
 
-		case 'L':
+		case 76: // 'L':
 			mapLightOn(&map, &(*player));
 
 			break;

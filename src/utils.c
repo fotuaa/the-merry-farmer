@@ -35,6 +35,31 @@ int  getString(char* question, char* str) {
 
 }
 
+int getKey(int* ch1) {
+	
+	*ch1 = -1;
+
+
+/*	int ch2;
+
+	// для винды
+	*ch1 = getch();
+	if (*ch1 == 0 || *ch1 == 224) {
+		ch2 = getch();
+	}
+	else {
+		ch2 = *ch1;
+		*ch1 = -1;
+	}
+
+	return ch2;
+*/
+	// универсальный
+	char s[2];
+	scanf("%1s", s);
+	return s[0];
+
+}
 
 ////////////////////////////////
 //
@@ -255,6 +280,8 @@ void analyseLogFile() {
 //
 //  Виды меню
 //
+
+
 
 int menuChoice(char menus[][MAX_LENGHT_MENU_ITEM], int n) {
 	
